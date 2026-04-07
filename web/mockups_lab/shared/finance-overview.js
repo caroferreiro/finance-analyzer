@@ -2536,7 +2536,7 @@
 
     if (settingsImportMappingsCsvsInput) {
       settingsImportMappingsCsvsInput.addEventListener("change", async function (event) {
-        var files = event.target && event.target.files ? event.target.files : [];
+        var files = event.target && event.target.files ? Array.from(event.target.files) : [];
         if (event.target) {
           event.target.value = "";
         }

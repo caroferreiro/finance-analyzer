@@ -1,0 +1,210 @@
+.fo-overview-metric-help-note {
+  margin-bottom: 12px;
+}
+
+.fo-overview-q001-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 14px;
+}
+
+.fo-overview-q34-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 14px;
+}
+
+.fo-overview-q001-widget h4 {
+  margin: 0 0 6px;
+  font-size: 15px;
+  color: rgba(232, 234, 240, 0.94);
+}
+
+.fo-overview-q34-widget h4 {
+  margin: 0 0 6px;
+  font-size: 15px;
+  color: rgba(232, 234, 240, 0.94);
+}
+
+.fo-overview-q001-widget .rightdesc {
+  margin-bottom: 10px;
+}
+
+.fo-overview-q001-widget .fo-table-scroll > table {
+  min-width: 0;
+}
+
+.fo-overview-q34-widget .fo-table-scroll > table {
+  min-width: 0;
+}
+
+.fo-overview-q001-table th,
+.fo-overview-q001-table td {
+  text-align: center;
+}
+
+.fo-overview-q001-table tbody td:first-child {
+  font-weight: 600;
+}
+
+.fo-overview-q34-table th,
+.fo-overview-q34-table td {
+  text-align: center;
+}
+
+.fo-overview-q34-table tbody td:first-child {
+  font-weight: 600;
+}
+
+#fo-overview-q8-host {
+  margin-top: 14px;
+}
+
+@media (max-width: 980px) {
+  .fo-overview-q001-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .fo-overview-q34-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.fo-overview-snapshot-table th,
+.fo-overview-snapshot-table td,
+.fo-overview-snapshot-table td.metric {
+  text-align: center;
+}
+
+.fo-overview-snapshot-table td.metric {
+  position: relative;
+}
+
+.fo-metric-help-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  max-width: 100%;
+}
+
+.fo-metric-help-label {
+  display: inline-block;
+}
+
+.fo-metric-help {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 1px solid rgba(122, 162, 255, 0.35);
+  border-radius: 999px;
+  background: rgba(122, 162, 255, 0.12);
+  color: rgba(226, 232, 240, 0.92);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: help;
+  flex: 0 0 auto;
+}
+
+.fo-metric-help:focus-visible {
+  outline: 2px solid rgba(122, 162, 255, 0.7);
+  outline-offset: 2px;
+}
+
+.fo-metric-help-tooltip {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 10px);
+  transform: translateX(-50%) translateY(-4px);
+  z-index: 5;
+  width: min(280px, calc(100vw - 48px));
+  padding: 10px 12px;
+  border: 1px solid rgba(232, 234, 240, 0.12);
+  border-radius: 10px;
+  background: rgba(17, 20, 27, 0.98);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.34);
+  color: rgba(232, 234, 240, 0.92);
+  font-size: 11.5px;
+  line-height: 1.4;
+  text-align: left;
+  white-space: normal;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .14s ease, transform .14s ease, visibility .14s ease;
+}
+
+.fo-metric-help-wrap:hover .fo-metric-help-tooltip,
+.fo-metric-help-wrap:focus-within .fo-metric-help-tooltip,
+.fo-metric-help-wrap[data-open="true"] .fo-metric-help-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+body[data-fo-boot-state="loading"] .fo-overview-snapshot-table tbody tr:not(.fo-stage1-skeleton-row) {
+  display: none;
+}
+
+body[data-fo-boot-state="loading"] .fo-overview-snapshot-table tbody .fo-stage1-skeleton-row {
+  display: table-row;
+}
+
+.fo-stage1-skeleton-row td {
+  color: var(--muted);
+  font-style: italic;
+  text-align: center;
+  padding: 14px 10px;
+}
+
+.fo-stage1-skeleton {
+  position: relative;
+  overflow: hidden;
+  color: transparent;
+}
+
+body[data-fo-boot-state="ready"] .fo-stage1-skeleton,
+body[data-fo-boot-state="error"] .fo-stage1-skeleton {
+  color: inherit;
+}
+
+body[data-fo-boot-state="ready"] .fo-stage1-skeleton::before,
+body[data-fo-boot-state="ready"] .fo-stage1-skeleton::after,
+body[data-fo-boot-state="error"] .fo-stage1-skeleton::before,
+body[data-fo-boot-state="error"] .fo-stage1-skeleton::after {
+  content: none;
+  display: none;
+}
+
+.fo-stage1-skeleton::before {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+  border: 1px solid rgba(232,234,240,.12);
+}
+
+.fo-stage1-skeleton::after {
+  content: "";
+  position: absolute;
+  top: 14px;
+  bottom: 14px;
+  width: 45%;
+  left: -50%;
+  border-radius: 10px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
+  animation: fo-stage1-shimmer 1.35s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes fo-stage1-shimmer {
+  100% { left: 110%; }
+}

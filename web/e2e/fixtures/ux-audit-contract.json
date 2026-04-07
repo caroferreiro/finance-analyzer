@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "expectedRuntimeMode": "strict",
+  "expectedLoadProfile": "public",
+  "views": [
+    {
+      "key": "overview",
+      "expectedCardCount": 4,
+      "expectedTableCount": 5,
+      "expectedChartHostCount": 1,
+      "expectHorizontalOverflow": false,
+      "requiredChartHosts": [
+        "fo-overview-q8-host"
+      ]
+    },
+    {
+      "key": "debt",
+      "expectedCardCount": 4,
+      "expectedTableCount": 1,
+      "expectedChartHostCount": 3,
+      "expectHorizontalOverflow": false,
+      "requiredChartHosts": [
+        "fo-debt-new-total-host",
+        "fo-debt-new-projected-host",
+        "fo-debt-new-delta-host"
+      ]
+    },
+    {
+      "key": "owners",
+      "expectedCardCount": 3,
+      "expectedTableCount": 4,
+      "expectedChartHostCount": 1,
+      "expectHorizontalOverflow": false,
+      "requiredChartHosts": [
+        "fo-owners-new-trend-host"
+      ]
+    },
+    {
+      "key": "categories",
+      "expectedCardCount": 2,
+      "expectedTableCount": 4,
+      "expectedChartHostCount": 0,
+      "expectHorizontalOverflow": false,
+      "requiredChartHosts": []
+    },
+    {
+      "key": "dq",
+      "expectedCardCount": 1,
+      "expectedTableCount": 1,
+      "expectedChartHostCount": 0,
+      "expectHorizontalOverflow": false,
+      "requiredChartHosts": []
+    },
+    {
+      "key": "raw",
+      "expectedCardCount": 1,
+      "expectedTableCount": 1,
+      "expectedChartHostCount": 0,
+      "expectHorizontalOverflow": false,
+      "requiredChartHosts": []
+    },
+    {
+      "key": "settings",
+      "expectedCardCount": 7,
+      "expectedTableCount": 1,
+      "expectedChartHostCount": 0,
+      "expectHorizontalOverflow": false,
+      "requiredChartHosts": []
+    }
+  ]
+}

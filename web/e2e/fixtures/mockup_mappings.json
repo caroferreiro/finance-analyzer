@@ -1,0 +1,9 @@
+{
+  "ownersByCardOwner": {
+    "ALICE": "Alice"
+  },
+  "ownersByCardNumber": {},
+  "categoryByDetail": {
+    "SUPERMARKET": "Food"
+  }
+}

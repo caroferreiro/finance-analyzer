@@ -1,0 +1,2 @@
+Bank;CardCompany;CloseDate;ExpirationDate;TotalARS;TotalUSD;CardNumber;CardOwner;CardTotalARS;CardTotalUSD;MovementType;OriginalDate;ReceiptNumber;Detail;CurrentInstallment;TotalInstallments;AmountARS;AmountUSD
+DEMO_BANK;VISA;2025/01/25;2025-02-10;0,00;0,00;;;;;PastPayment;;;SALDO ANTERIOR;;;-10.000,00;0,00

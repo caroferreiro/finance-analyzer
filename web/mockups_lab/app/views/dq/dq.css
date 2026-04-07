@@ -1,0 +1,77 @@
+.dq-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.dq-stat {
+  border: 1px solid rgba(232,234,240,.12);
+  border-radius: 10px;
+  background: rgba(255,255,255,.03);
+  padding: 10px;
+}
+
+.dq-stat .label {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.dq-stat .value {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.dq-issues-note {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+.fo-dq-pagination {
+  margin-top: 10px;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+}
+
+.fo-dq-table-stage {
+  max-height: 62vh;
+  overflow: auto;
+  border: 1px solid rgba(232,234,240,.08);
+  border-radius: 12px;
+}
+
+.fo-dq-table-stage table {
+  min-width: 100%;
+}
+
+.fo-dq-table-stage thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: rgba(17,19,24,.98);
+}
+
+#fo-dq-issues-table th:nth-child(6),
+#fo-dq-issues-table td:nth-child(6),
+#fo-dq-new-issues-table th:nth-child(6),
+#fo-dq-new-issues-table td:nth-child(6) {
+  white-space: normal;
+  min-width: 320px;
+}
+
+#fo-dq-issues-table td:nth-child(3),
+#fo-dq-new-issues-table td:nth-child(3) {
+  white-space: normal;
+  min-width: 180px;
+}
+
+@media (max-width: 900px) {
+  .dq-summary-grid {
+    grid-template-columns: 1fr;
+  }
+}

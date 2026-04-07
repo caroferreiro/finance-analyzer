@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Finance Analyzer</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0c0f'/%3E%3Cpath d='M16 44V20h14c7 0 12 4 12 10 0 7-5 11-12 11h-7v3H16zm7-10h6c4 0 6-2 6-4s-2-4-6-4h-6v8zM44 44V20h7v24h-7z' fill='%23e8eaf0'/%3E%3C/svg%3E"/>
+  <link rel="stylesheet" href="./mockups_lab/app/theme/tokens.css"/>
+  <link rel="stylesheet" href="./mockups_lab/app/shell/shell.css"/>
+  <link rel="stylesheet" href="./mockups_lab/app/shared/primitives.css"/>
+  <link rel="stylesheet" href="./mockups_lab/app/shared/priority-strip.css"/>
+  <link rel="stylesheet" href="./mockups_lab/app/shared/controls.css"/>
+  <link rel="stylesheet" href="./mockups_lab/app/views/overview/overview.css"/>
+  <link rel="stylesheet" href="./mockups_lab/app/views/debt/debt.css"/>
+  <link rel="stylesheet" href="./mockups_lab/app/views/owners/owners.css"/>
+  <link rel="stylesheet" href="./mockups_lab/app/views/categories/categories.css"/>
+  <link rel="stylesheet" href="./mockups_lab/app/views/dq/dq.css"/>
+  <link rel="stylesheet" href="./mockups_lab/app/views/raw/raw.css"/>
+  <link rel="stylesheet" href="./mockups_lab/app/views/settings/settings.css"/>
+</head>
+<body data-fo-boot-state="loading">
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="title">Finance Analyzer</div>
+      </div>
+      <nav class="nav" aria-label="Primary sections">
+        <button id="fo-nav-overview" type="button" class="active" data-page="overview" aria-controls="overview" aria-current="page">Overview</button>
+        <button id="fo-nav-debt" type="button" data-page="debt" aria-controls="debt" aria-current="false">Debt</button>
+        <button id="fo-nav-owners" type="button" data-page="owners" aria-controls="owners" aria-current="false">Owners</button>
+        <button id="fo-nav-categories" type="button" data-page="categories" aria-controls="categories" aria-current="false">Categories</button>
+        <button id="fo-nav-dq" type="button" data-page="dq" aria-controls="dq" aria-current="false">Data Quality</button>
+        <button id="fo-nav-raw" type="button" data-page="raw" aria-controls="raw" aria-current="false">Raw Data</button>
+        <button id="fo-nav-settings" type="button" data-page="settings" aria-controls="settings" aria-current="false">Settings</button>
+      </nav>
+      <div class="sidebar-footer">
+        <a
+          class="sidebar-github-link"
+          href="https://github.com/caroferreiro/finance-analyzer"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="View finance-analyzer on GitHub"
+        >
+          <svg aria-hidden="true" viewBox="0 0 16 16" focusable="false">
+            <path
+              fill="currentColor"
+              d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.5-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.5 7.5 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8Z"
+            />
+          </svg>
+          <span>GitHub</span>
+        </a>
+      </div>
+    </aside>
+
+    <main id="main-content" class="content" tabindex="-1">
+      <div class="topbar">
+        <div class="left">
+          <div class="h2-slot">
+            <div class="h2 fo-topbar-status-line">
+              <span class="fo-topbar-status-label">Latest statement month:</span>
+              <span id="fo-latest-month" class="fo-topbar-status-value">Loading...</span>
+              <span id="fo-latest-month-note" class="fo-topbar-status-note">Checking latest card close date...</span>
+            </div>
+            <div class="h2 fo-topbar-status-line">
+              <span class="fo-topbar-status-label">Data quality warnings:</span>
+              <span id="fo-topbar-dq-summary" class="fo-topbar-status-value">Checking...</span>
+              <button id="fo-dq-review-link" class="fo-inline-action fo-topbar-action is-hidden" type="button">Review in Data Quality</button>
+            </div>
+            <div class="h2 fo-topbar-guidance-line">
+              Demo data loads by default. Delete loaded files and load your own CSVs to start fresh.
+            </div>
+          </div>
+        </div>
+        <div class="actions">
+          <button id="fo-load-btn" class="btn primary">Load CSV(s)</button>
+          <input id="fo-import-csv-input" class="fo-hook-input" type="file" accept=".csv,text/csv" multiple />
+          <button id="fo-import-workspace-btn" class="btn">Import workspace</button>
+          <input id="fo-workspace-file-input" class="fo-hook-input" type="file" accept=".json,application/json" />
+          <button id="fo-export-workspace-btn" class="btn">Export workspace</button>
+          <button id="fo-load-demo-btn" class="btn">Reload demo data</button>
+        </div>
+      </div>
+
+      <section id="overview" class="page active" aria-labelledby="fo-nav-overview" data-fo-view-variant="new">
+        <div class="grid">
+          <div class="card span-12">
+            <h3 id="fo-overview-new-kpi-title">Monthly snapshot (latest vs previous)</h3>
+            <p id="fo-overview-metric-help-note" class="note">Use the info buttons in the <strong>Metric</strong> column for short definitions.</p>
+            <div class="fo-table-scroll">
+              <table id="fo-overview-new-table" class="fo-overview-snapshot-table" aria-label="Latest vs previous month table">
+                <thead>
+                  <tr>
+                    <th>Metric</th>
+                    <th>Latest ARS</th><th>Prev ARS</th><th>Δ ARS</th><th>Δ % ARS</th>
+                    <th>Latest USD</th><th>Prev USD</th><th>Δ USD</th><th>Δ % USD</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="fo-stage1-skeleton-row"><td colspan="9">Loading runtime metrics...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card span-12">
+            <h3 id="fo-overview-q001-title">Where did our money go this month?</h3>
+            <div class="fo-overview-q001-grid">
+              <section class="fo-overview-q001-widget" aria-labelledby="fo-overview-statement-title">
+                <h4 id="fo-overview-statement-title">Statement composition (ARS)</h4>
+                <div id="fo-overview-statement-meta" class="rightdesc">Loading statement composition...</div>
+                <div class="fo-table-scroll">
+                  <table id="fo-overview-statement-table" class="fo-overview-q001-table" aria-label="Overview statement composition ARS">
+                    <thead>
+                      <tr>
+                        <th>Component</th>
+                        <th>Amount ARS</th>
+                        <th>% of statement</th>
+                      </tr>
+                    </thead>
+                    <tbody id="fo-overview-statement-body">
+                      <tr><td colspan="3">Loading...</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+              <section class="fo-overview-q001-widget" aria-labelledby="fo-overview-categories-title">
+                <h4 id="fo-overview-categories-title">Top categories within card movements (ARS)</h4>
+                <div id="fo-overview-categories-meta" class="rightdesc">Loading top categories...</div>
+                <div class="fo-table-scroll">
+                  <table id="fo-overview-categories-table" class="fo-overview-q001-table" aria-label="Overview top categories latest month ARS">
+                    <thead>
+                      <tr>
+                        <th>Category</th>
+                        <th>Amount ARS</th>
+                        <th>Share %</th>
+                      </tr>
+                    </thead>
+                    <tbody id="fo-overview-categories-body">
+                      <tr><td colspan="3">Loading...</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            </div>
+          </div>
+          <div class="card span-12">
+            <h3 id="fo-overview-q34-title">What changed vs last month?</h3>
+            <div id="fo-overview-q34-meta" class="rightdesc">Loading category change summary...</div>
+            <div class="fo-overview-q34-grid">
+              <section class="fo-overview-q34-widget" aria-labelledby="fo-overview-q3-title">
+                <h4 id="fo-overview-q3-title">Biggest increases (ARS)</h4>
+                <div class="fo-table-scroll">
+                  <table id="fo-overview-q3-table" class="fo-overview-q34-table" aria-label="Overview biggest category increases ARS">
+                    <thead>
+                      <tr>
+                        <th>Category</th>
+                        <th>Prev ARS</th>
+                        <th>Latest ARS</th>
+                        <th>Δ ARS</th>
+                      </tr>
+                    </thead>
+                    <tbody id="fo-overview-q3-body">
+                      <tr><td colspan="4">Loading...</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+              <section class="fo-overview-q34-widget" aria-labelledby="fo-overview-q4-title">
+                <h4 id="fo-overview-q4-title">Biggest decreases (ARS)</h4>
+                <div class="fo-table-scroll">
+                  <table id="fo-overview-q4-table" class="fo-overview-q34-table" aria-label="Overview biggest category decreases ARS">
+                    <thead>
+                      <tr>
+                        <th>Category</th>
+                        <th>Prev ARS</th>
+                        <th>Latest ARS</th>
+                        <th>Δ ARS</th>
+                      </tr>
+                    </thead>
+                    <tbody id="fo-overview-q4-body">
+                      <tr><td colspan="4">Loading...</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            </div>
+          </div>
+          <div class="card span-12">
+            <h3 id="fo-overview-q8-title">Is total debt growing or shrinking?</h3>
+            <div id="fo-overview-q8-meta" class="rightdesc">Loading debt direction summary...</div>
+            <div
+              id="fo-overview-q8-host"
+              class="placeholder fo-overview-q8-host"
+              data-fo-chart-title="Overview total remaining installment debt trend"
+            >
+              Line chart placeholder: total remaining installment debt trend (ARS/USD).
+            </div>
+          </div>
+        </div>
+      </section>
+
+      
+
+      <section id="debt" class="page" aria-labelledby="fo-nav-debt" data-fo-view-variant="new" hidden>
+        <div class="grid">
+          <div class="card span-12">
+            <h3>Total remaining installment debt</h3>
+            <div id="fo-debt-new-total-meta" class="rightdesc">Loading total debt summary...</div>
+            <div id="fo-debt-new-total-host" class="placeholder">Line chart placeholder: total remaining installment debt trend (ARS/USD).</div>
+          </div>
+          <div class="card span-12">
+            <h3>Projected installment debt</h3>
+            <div id="fo-debt-new-projected-meta" class="rightdesc">Loading projected installment debt...</div>
+            <div id="fo-debt-new-projected-host" class="placeholder">Bar chart placeholder: future installment burden already committed by current installments (ARS/USD).</div>
+          </div>
+          <div class="card span-12">
+            <h3>Financial costs (latest month)</h3>
+            <div class="fo-table-scroll">
+              <table id="fo-debt-new-finance-cost-table" aria-label="Latest month financial costs">
+                <thead>
+                  <tr>
+                    <th>Metric</th>
+                    <th>Amount ARS</th>
+                    <th>Amount USD</th>
+                    <th>Rows</th>
+                  </tr>
+                </thead>
+                <tbody id="fo-debt-new-finance-cost-body">
+                  <tr><td colspan="4">Loading financial costs...</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div id="fo-debt-new-finance-cost-meta" class="rightdesc" style="margin-top:10px;">Loading financial-cost summary...</div>
+          </div>
+          <div class="card span-12">
+            <h3>Total debt change vs previous month</h3>
+            <div id="fo-debt-new-delta-meta" class="rightdesc">Loading debt delta summary...</div>
+            <div id="fo-debt-new-delta-host" class="placeholder">Percent-change bar chart placeholder for total remaining installment debt change vs previous month, with absolute delta in the tooltip (ARS/USD).</div>
+          </div>
+        </div>
+      </section>
+
+      
+
+      <section id="owners" class="page" aria-labelledby="fo-nav-owners" data-fo-view-variant="new" hidden>
+        <div class="grid">
+          <div class="card span-12 fo-owners-new-widget">
+            <h3 id="fo-owners-new-trend-title">How are owner amounts evolving over time?</h3>
+            <div id="fo-owners-new-trend-meta" class="rightdesc">Latest month: Loading...</div>
+            <div id="fo-owners-new-trend-host" class="placeholder">Line chart placeholder: monthly owner totals by statement month (ARS/USD).</div>
+          </div>
+          <div class="card span-12 fo-owners-new-widget">
+            <h3 id="fo-owners-new-rank-title">Which owner is driving the highest spending this month?</h3>
+            <div id="fo-owners-new-meta" class="rightdesc">Latest month: Loading...</div>
+            <div class="fo-owners-new-grid">
+              <div>
+                <h4>ARS</h4>
+                <table id="fo-owners-new-table-ars" aria-label="Top owners ARS">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Owner</th>
+                      <th>Movements</th>
+                      <th>Amount ARS</th>
+                    </tr>
+                  </thead>
+                  <tbody id="fo-owners-new-ars-body">
+                    <tr><td colspan="4">Loading...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div>
+                <h4>USD</h4>
+                <table id="fo-owners-new-table-usd" aria-label="Top owners USD">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Owner</th>
+                      <th>Movements</th>
+                      <th>Amount USD</th>
+                    </tr>
+                  </thead>
+                  <tbody id="fo-owners-new-usd-body">
+                    <tr><td colspan="4">Loading...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="card span-12 fo-owners-new-widget">
+            <h3 id="fo-owners-new-pairs-title">Which owner-category pairs are largest this month?</h3>
+            <div id="fo-owners-new-pairs-meta" class="rightdesc">Latest month: Loading...</div>
+            <div class="fo-owners-new-grid">
+              <div>
+                <h4>ARS</h4>
+                <table id="fo-owners-new-pairs-table-ars" aria-label="Top owner-category pairs ARS">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Owner</th>
+                      <th>Category</th>
+                      <th>Movements</th>
+                      <th>Amount ARS</th>
+                    </tr>
+                  </thead>
+                  <tbody id="fo-owners-new-pairs-ars-body">
+                    <tr><td colspan="5">Loading...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div>
+                <h4>USD</h4>
+                <table id="fo-owners-new-pairs-table-usd" aria-label="Top owner-category pairs USD">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Owner</th>
+                      <th>Category</th>
+                      <th>Movements</th>
+                      <th>Amount USD</th>
+                    </tr>
+                  </thead>
+                  <tbody id="fo-owners-new-pairs-usd-body">
+                    <tr><td colspan="5">Loading...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+            
+            <section id="categories" class="page" aria-labelledby="fo-nav-categories" data-fo-view-variant="new" hidden>
+              <div class="grid">
+                <div class="card span-12">
+                  <h3 id="fo-categories-new-top-title">Where did category spending go this month?</h3>
+                  <div id="fo-categories-new-meta" class="rightdesc">Loading categories summary...</div>
+                  <div class="fo-categories-new-rank-grid">
+                    <div class="fo-table-scroll">
+                      <table id="fo-categories-new-table-ars" aria-label="Rebuilt top categories ARS">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Category</th>
+                            <th>Movements</th>
+                            <th>Carry over debt ARS</th>
+                            <th>New debt ARS</th>
+                            <th>Total ARS</th>
+                          </tr>
+                        </thead>
+                        <tbody id="fo-categories-new-ars-body">
+                          <tr><td colspan="6">Loading...</td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="fo-table-scroll">
+                      <table id="fo-categories-new-table-usd" aria-label="Rebuilt top categories USD">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Category</th>
+                            <th>Movements</th>
+                            <th>Carry over debt USD</th>
+                            <th>New debt USD</th>
+                            <th>Total USD</th>
+                          </tr>
+                        </thead>
+                        <tbody id="fo-categories-new-usd-body">
+                          <tr><td colspan="6">Loading...</td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="card span-12">
+                  <h3 id="fo-categories-new-mom-title">What changed vs last month?</h3>
+                  <div id="fo-categories-new-mom-meta" class="rightdesc">Loading category month-over-month deltas...</div>
+                  <div class="fo-categories-new-mom-grid">
+                    <section class="fo-categories-new-widget" aria-labelledby="fo-categories-new-mom-ars-title">
+                      <h4 id="fo-categories-new-mom-ars-title">ARS</h4>
+                      <div class="fo-table-scroll">
+                        <table id="fo-categories-new-mom-table-ars" aria-label="Rebuilt category month-over-month delta ARS">
+                          <thead>
+                            <tr>
+                              <th>#</th>
+                              <th>Direction</th>
+                              <th>Category</th>
+                              <th>Prev ARS</th>
+                              <th>Latest ARS</th>
+                              <th>Δ ARS</th>
+                            </tr>
+                          </thead>
+                          <tbody id="fo-categories-new-mom-ars-body">
+                            <tr><td colspan="6">Loading...</td></tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                    <section class="fo-categories-new-widget" aria-labelledby="fo-categories-new-mom-usd-title">
+                      <h4 id="fo-categories-new-mom-usd-title">USD</h4>
+                      <div class="fo-table-scroll">
+                        <table id="fo-categories-new-mom-table-usd" aria-label="Rebuilt category month-over-month delta USD">
+                          <thead>
+                            <tr>
+                              <th>#</th>
+                              <th>Direction</th>
+                              <th>Category</th>
+                              <th>Prev USD</th>
+                              <th>Latest USD</th>
+                              <th>Δ USD</th>
+                            </tr>
+                          </thead>
+                          <tbody id="fo-categories-new-mom-usd-body">
+                            <tr><td colspan="6">Loading...</td></tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            
+            <section id="dq" class="page" aria-labelledby="fo-nav-dq" data-fo-view-variant="new" hidden>
+              <div class="grid">
+                <div class="card span-12">
+                  <h3>Data quality issues</h3>
+                  <div id="fo-dq-new-meta" class="rightdesc">Loading strict diagnostics summary...</div>
+                  <div class="dq-summary-grid" style="margin-top:10px;">
+                    <div class="dq-stat">
+                      <span class="label">Total issues</span>
+                      <span id="fo-dq-new-summary-total" class="value">-</span>
+                    </div>
+                    <div class="dq-stat">
+                      <span class="label">Missing category mappings (DQ003)</span>
+                      <span id="fo-dq-new-summary-category" class="value">-</span>
+                    </div>
+                    <div class="dq-stat">
+                      <span class="label">Missing owner mappings (DQ004)</span>
+                      <span id="fo-dq-new-summary-owner" class="value">-</span>
+                    </div>
+                  </div>
+                  <div id="fo-dq-new-note" class="dq-issues-note">Loading strict diagnostics details...</div>
+                  <div id="fo-dq-new-pagination" class="fo-inline-controls fo-dq-pagination" aria-label="Data quality table pagination">
+                    <button id="fo-dq-new-prev" class="btn" type="button">Previous</button>
+                    <span id="fo-dq-new-page" class="rightdesc">Page 1 of 1</span>
+                    <button id="fo-dq-new-next" class="btn" type="button">Next</button>
+                  </div>
+                  <div class="fo-table-scroll fo-dq-table-stage" style="margin-top:10px;">
+                    <table id="fo-dq-new-issues-table" aria-label="Data quality issues">
+                      <thead>
+                        <tr>
+                          <th>Rule</th>
+                          <th>CloseDate</th>
+                          <th>Detail</th>
+                          <th>CardOwner</th>
+                          <th>CardNumber</th>
+                          <th>Message</th>
+                        </tr>
+                      </thead>
+                      <tbody id="fo-dq-new-issues-body">
+                        <tr><td colspan="6">Loading...</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            
+            <section id="raw" class="page" aria-labelledby="fo-nav-raw" data-fo-view-variant="new" hidden>
+              <div class="grid">
+                <div class="card span-12">
+                  <h3>Raw data explorer</h3>
+                  <div class="raw-controls">
+                    <div class="raw-filter">
+                      <label for="fo-raw-new-filter-month">Statement Month</label>
+                      <select id="fo-raw-new-filter-month">
+                        <option value="">All months</option>
+                      </select>
+                    </div>
+                    <div class="raw-filter">
+                      <label for="fo-raw-new-filter-owner">Card Owner</label>
+                      <select id="fo-raw-new-filter-owner">
+                        <option value="">All owners</option>
+                      </select>
+                    </div>
+                    <div class="raw-filter">
+                      <label for="fo-raw-new-filter-type">Movement Type</label>
+                      <select id="fo-raw-new-filter-type">
+                        <option value="">All movement types</option>
+                      </select>
+                    </div>
+                    <div class="raw-filter">
+                      <label>&nbsp;</label>
+                      <button id="fo-raw-new-filter-reset" class="btn" type="button">Reset filters</button>
+                    </div>
+                    <div class="raw-filter">
+                      <label>&nbsp;</label>
+                      <button id="fo-raw-new-download-filtered-btn" class="btn" type="button">Download filtered CSV</button>
+                    </div>
+                  </div>
+                  <div id="fo-raw-new-active-filters" class="raw-meta">Active filters: none</div>
+                  <details id="fo-raw-new-column-controls-details" class="raw-column-controls-details">
+                    <summary id="fo-raw-new-column-controls-summary">Columns and column filters</summary>
+                    <div class="raw-column-preset-controls">
+                      <button id="fo-raw-new-columns-preset-compact" class="btn" type="button">Compact preset</button>
+                      <button id="fo-raw-new-columns-preset-all" class="btn" type="button">Show all columns</button>
+                    </div>
+                    <div id="fo-raw-new-column-controls" class="raw-column-controls" aria-label="Rebuilt raw column visibility controls"></div>
+                  </details>
+                  <div id="fo-raw-new-pagination" class="raw-pagination-wrap">
+                    <nav class="raw-pagination" aria-label="Rebuilt raw explorer pagination">
+                      <button id="fo-raw-new-prev" class="btn" type="button">Previous</button>
+                      <div id="fo-raw-new-page-strip" class="raw-page-strip" aria-label="Rebuilt raw page strip"></div>
+                      <button id="fo-raw-new-next" class="btn" type="button">Next</button>
+                    </nav>
+                  </div>
+                  <div class="raw-table-wrap">
+                    <table id="fo-raw-new-table" aria-label="Rebuilt raw explorer table">
+                      <thead id="fo-raw-new-head"></thead>
+                      <tbody id="fo-raw-new-body">
+                        <tr><td>Loading...</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div id="fo-raw-new-meta" class="raw-meta">Loading strict runtime rows...</div>
+                </div>
+              </div>
+            </section>
+
+            
+            <section id="settings" class="page" aria-labelledby="fo-nav-settings" data-fo-view-variant="new" hidden>
+              <div class="grid">
+                <div class="card span-12 fo-settings-shell-card">
+                  <div class="fo-settings-shell-header">
+                    <div>
+                      <h3>Settings</h3>
+                      <p class="fo-settings-shell-copy">Use this page for operational controls. Use the top bar to load CSVs and import or export a workspace.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card span-6 fo-settings-shell-card">
+                  <h3>Compute</h3>
+                  <p class="fo-settings-shell-copy">Recompute the current bundle after loading files, importing a workspace, or changing mappings.</p>
+                  <div class="fo-settings-action-row">
+                    <button id="fo-settings-run-compute-btn" class="btn" type="button">Compute</button>
+                  </div>
+                </div>
+
+                <div class="card span-6 fo-settings-shell-card">
+                  <h3>Status and storage</h3>
+                  <div id="fo-settings-storage-banner" class="fo-storage-banner is-hidden" role="alert">
+                    Storage unavailable. Data will not persist across reloads.
+                  </div>
+                  <p id="fo-settings-storage-usage" class="fo-status-line">Storage: unknown</p>
+                  <p id="fo-settings-loaded-files-meta" class="fo-status-line">Loaded files: 0</p>
+                  <p id="fo-settings-mappings-summary" class="fo-status-line">Mappings: no data loaded.</p>
+                  <pre id="fo-settings-status" aria-live="polite">Idle</pre>
+                </div>
+
+                <div class="card span-6 fo-settings-shell-card">
+                  <h3>Mappings</h3>
+                  <p class="fo-settings-shell-copy">Import, export, and inspect the current mapping set without opening the donor surface.</p>
+                  <div class="fo-settings-action-row">
+                    <button id="fo-settings-import-mappings-btn" class="btn" type="button">Import mappings</button>
+                    <input id="fo-settings-import-mappings-input" class="fo-hook-input" type="file" accept=".json,application/json" />
+                    <button id="fo-settings-download-template-mappings-btn" class="btn" type="button">Download template</button>
+                    <button id="fo-settings-download-mappings-btn" class="btn" type="button">Download current</button>
+                    <button id="fo-settings-copy-mappings-btn" class="btn" type="button">Copy mappings</button>
+                  </div>
+                  <details class="fo-settings-json-details">
+                    <summary>Mappings JSON</summary>
+                    <pre id="fo-settings-mappings-json">{}</pre>
+                  </details>
+                </div>
+
+                <div class="card span-6 fo-settings-shell-card">
+                  <h3>Workspace and loaded files</h3>
+                  <p class="fo-settings-shell-copy">Use the top bar to import or export a workspace. This card keeps the current loaded files visible.</p>
+                  <div class="fo-settings-action-row">
+                    <button id="fo-settings-delete-selected-btn" class="btn" type="button">Delete selected</button>
+                    <button id="fo-settings-export-all-csvs-btn" class="btn" type="button">Export all CSVs</button>
+                  </div>
+                  <ul id="fo-settings-loaded-files-list-rebuild" aria-label="Loaded files list">
+                    <li>No files loaded yet.</li>
+                  </ul>
+                </div>
+
+                <div class="card span-12 fo-settings-shell-card">
+                  <h3>Rule editor</h3>
+                  <p class="fo-settings-shell-copy">Edit owner and category rules directly. Segment rules stay out of the MVP.</p>
+                  <div class="fo-rule-editor-toolbar fo-settings-rule-editor-toolbar">
+                    <div>
+                      <label for="fo-settings-rule-editor-type">Mapping type</label>
+                      <select id="fo-settings-rule-editor-type">
+                        <option value="ownersByCardOwner">Card owner -&gt; canonical owner</option>
+                        <option value="ownersByCardNumber">Card number -&gt; canonical owner</option>
+                        <option value="categoryByDetail">Detail -&gt; category</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label for="fo-settings-rule-editor-search">Search rules</label>
+                      <input id="fo-settings-rule-editor-search" type="search" placeholder="Filter by key or value" />
+                    </div>
+                  </div>
+                  <div class="fo-rule-editor-form fo-settings-rule-editor-form">
+                    <input id="fo-settings-rule-editor-key" type="text" placeholder="Rule key" />
+                    <input id="fo-settings-rule-editor-value" type="text" placeholder="Rule value" />
+                    <button id="fo-settings-rule-editor-save-btn" class="btn" type="button">Save rule</button>
+                    <button id="fo-settings-rule-editor-reset-btn" class="btn" type="button">Reset</button>
+                  </div>
+                  <p id="fo-settings-rule-editor-validation" class="is-hidden" aria-live="polite"></p>
+                  <div class="fo-rule-editor-table-wrap">
+                    <table id="fo-settings-rule-editor-table" aria-label="Rebuilt settings rule editor table">
+                      <thead>
+                        <tr>
+                          <th>Key</th>
+                          <th>Value</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody id="fo-settings-rule-editor-body">
+                        <tr><td colspan="3">Loading mappings...</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div id="fo-settings-rule-editor-meta">Loading mappings...</div>
+                </div>
+
+                <div class="card span-12 fo-settings-shell-card fo-settings-danger-card">
+                  <h3>Danger zone</h3>
+                  <p class="fo-settings-shell-copy">Use these only when you want a real reset.</p>
+                  <div class="fo-settings-action-row">
+                    <button id="fo-settings-clear-mappings-btn" class="btn fo-btn-danger" type="button">Clear mappings</button>
+                    <button id="fo-settings-delete-all-btn" class="btn fo-btn-danger" type="button">Delete all loaded files + mappings</button>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+    
+
+    </main>
+  </div>
+
+  <script src="./vendor/highcharts/highcharts.js"></script>
+  <script src="./vendor/highcharts/dark-unica.js"></script>
+  <script src="./mockups_lab/shared/asset-version.js"></script>
+  <script src="./mockups_lab/shared/finance-overview-loader.js"></script>
+  <script type="module" src="./mockups_lab/app/main.js"></script>
+</body>
+</html>

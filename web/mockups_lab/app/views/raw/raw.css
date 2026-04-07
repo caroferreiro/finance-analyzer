@@ -1,0 +1,239 @@
+.raw-controls {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(160px, 1fr));
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.raw-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.raw-filter label {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.raw-filter select {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(232,234,240,.18);
+  background: rgba(255,255,255,.03);
+  color: var(--text);
+  font-size: 12px;
+}
+
+.raw-table-wrap {
+  overflow: auto;
+  border: 1px solid rgba(232,234,240,.10);
+  border-radius: 12px;
+  background: rgba(255,255,255,.02);
+}
+
+.raw-table-wrap table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: rgba(18,20,26,.98);
+}
+
+.raw-table-wrap table {
+  border: none;
+  border-radius: 0;
+  min-width: 1200px;
+}
+
+.raw-column-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.raw-column-controls-details {
+  margin: 10px 0;
+  border: 1px solid rgba(232,234,240,.14);
+  border-radius: 10px;
+  background: rgba(255,255,255,.02);
+  padding: 0 10px 8px;
+}
+
+.raw-column-controls-details > summary {
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--muted);
+  padding: 8px 0;
+  user-select: none;
+}
+
+.raw-column-preset-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.raw-col-visibility {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--muted);
+  border: 1px solid rgba(232,234,240,.16);
+  border-radius: 999px;
+  background: rgba(255,255,255,.03);
+  padding: 5px 8px;
+}
+
+.raw-col-visibility input {
+  margin: 0;
+}
+
+.raw-col-filter-input {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(232,234,240,.18);
+  background: rgba(255,255,255,.03);
+  color: var(--text);
+  font-size: 11px;
+}
+
+#fo-raw-table thead tr:nth-child(2) td,
+#fo-raw-new-table thead tr:nth-child(2) td {
+  padding: 8px 8px;
+  background: rgba(255,255,255,.015);
+  position: sticky;
+  top: 37px;
+  z-index: 1;
+}
+
+.raw-pagination-wrap {
+  margin: 10px 0;
+}
+
+.raw-pagination {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  justify-content: flex-start;
+}
+
+.raw-pagination .btn {
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: 12px;
+}
+
+.raw-page-strip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+.raw-page-chip {
+  min-width: 38px;
+  min-height: 38px;
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(232,234,240,.1);
+  background: rgba(255,255,255,.03);
+  color: var(--text);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.raw-page-chip:hover {
+  background: rgba(255,255,255,.06);
+  border-color: rgba(232,234,240,.18);
+}
+
+.raw-page-chip[aria-current="page"] {
+  background: rgba(122,162,255,.18);
+  border-color: rgba(122,162,255,.38);
+  color: rgba(244,247,255,.98);
+  font-weight: 700;
+  box-shadow: inset 0 0 0 1px rgba(122,162,255,.15);
+}
+
+.raw-page-ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  color: rgba(232,234,240,.45);
+  font-size: 16px;
+}
+
+.raw-meta {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+#fo-raw-active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.raw-active-filter-label {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.raw-active-filter-none {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.raw-active-filter-chips {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.raw-active-filter-chip {
+  font-size: 11px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(122,162,255,.35);
+  background: rgba(122,162,255,.12);
+  color: rgba(232,234,240,.95);
+  cursor: pointer;
+  line-height: 1.3;
+}
+
+.raw-active-filter-chip:hover {
+  background: rgba(122,162,255,.18);
+  border-color: rgba(122,162,255,.45);
+}
+
+.raw-active-filter-clear {
+  padding: 5px 9px;
+  font-size: 11px;
+  border-radius: 999px;
+}
+
+@media (max-width: 900px) {
+  .raw-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .raw-pagination {
+    gap: 8px;
+  }
+
+  .raw-page-strip {
+    flex: 0 0 auto;
+  }
+}

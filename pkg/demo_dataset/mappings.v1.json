@@ -1,0 +1,27 @@
+{
+  "ownersByCardOwner": {
+    "OWNER A": "OwnerA"
+  },
+  "ownersByCardNumber": {
+    "0000": "OwnerA",
+    "2222": "OwnerA"
+  },
+  "categoryByDetail": {
+    "SUPERMARKET DEMO": "Groceries",
+    "SUPERMARKET  DEMO": "Groceries",
+    "STREAMING DEMO": "Subscriptions",
+    "REFUNDABLE DEMO": "Adjustments",
+    "TRANSPORT DEMO": "Transport",
+    "PHONE DEMO": "Electronics",
+    "SOFTWARE DEMO USD": "Subscriptions",
+    "AMEX MERCHANT DEMO": "Entertainment",
+    "SAME MONTH PAIR DEMO": "Adjustments"
+  },
+  "categorySegmentByCategory": {
+    "Groceries": "essential",
+    "Subscriptions": "discretionary",
+    "Transport": "essential",
+    "Electronics": "discretionary",
+    "Entertainment": "discretionary"
+  }
+}

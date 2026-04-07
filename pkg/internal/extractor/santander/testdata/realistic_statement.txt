@@ -1,0 +1,16 @@
+// Previous balance
+                        SALDO ANTERIOR                                           866.169,54              54,68
+// Past payment movements
+24 Noviem. 16           ZZZZZZZZZZZZZZZZZZ                                        23.202,00-
+           20           SU PAGO EN PESOS                                         832.054,80-
+           20           SU PAGO EN USD                                                                   54,68-
+           20           CR.IMPUESTO PAIS 30%                                      16.691,07-
+           20           CR.RG 5617 30% M                                          16.691,07-
+// Separator
+________________________________________________________________________________________________________________
+// Card movements (first card only, a few rows)
+24 Junio   06 123456 *  AAAAA                       C.07/09                       45.776,88
+24 Noviem. 25 789012 *  BBBBBBBBBBB         12345678901                            4.226,53
+           27 345678 *  SEGURO DE VIDA      9876543210                             9.373,07
+// Card total
+Tarjeta 1234 Total Consumos de JOOOOOHHN SMITH                                    59.376,48 *            0,00 *

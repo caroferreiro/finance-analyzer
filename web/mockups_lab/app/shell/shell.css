@@ -1,0 +1,211 @@
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -48px;
+  z-index: 100000;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(122,162,255,.45);
+  background: #0f172a;
+  color: #dbeafe;
+  text-decoration: none;
+  font-size: 12px;
+}
+
+.skip-link:focus {
+  top: 12px;
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+.app {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  min-height: 0;
+  padding: 18px 14px;
+  border-right: 1px solid var(--stroke2);
+  background: linear-gradient(180deg, #0e1015, #0b0c0f);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.brand {
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap: 10px;
+  padding: 10px 10px 14px;
+  border: 1px solid var(--stroke2);
+  border-radius: var(--radius);
+  background: rgba(255,255,255,.03);
+  margin-bottom: 12px;
+}
+
+.brand .title { font-weight: 700; letter-spacing: .2px; }
+
+.nav { display:flex; flex-direction:column; gap: 6px; margin-top: 10px; }
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+.sidebar-github-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--stroke2);
+  border-radius: 12px;
+  background: rgba(255,255,255,.03);
+  color: var(--text);
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.sidebar-github-link:hover {
+  background: rgba(255,255,255,.06);
+  border-color: rgba(255,255,255,.12);
+}
+
+.sidebar-github-link svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+}
+
+.nav button {
+  width: 100%;
+  text-align: left;
+  padding: 10px 10px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.nav button:hover {
+  background: rgba(255,255,255,.04);
+  border-color: rgba(255,255,255,.06);
+}
+
+.nav button.active {
+  background: rgba(122,162,255,.12);
+  border-color: rgba(122,162,255,.25);
+}
+
+.content {
+  height: 100vh;
+  min-height: 0;
+  padding: 18px 18px 40px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.topbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--stroke2);
+  border-radius: var(--radius);
+  background: rgba(255,255,255,.03);
+}
+
+.topbar .left { display:flex; flex-direction:column; gap: 2px; min-width: 0; }
+
+.topbar .left .h1 { font-weight: 700; font-size: 14px; }
+
+.topbar .left .h2-slot {
+  min-height: 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 2px;
+}
+
+.topbar .left .h2 {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.35;
+  min-height: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fo-topbar-status-line {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.fo-topbar-status-label {
+  font-weight: 700;
+  color: rgba(232,234,240,.96);
+}
+
+.fo-topbar-status-value {
+  color: rgba(226,232,240,.96);
+}
+
+.fo-topbar-status-note {
+  color: var(--muted);
+}
+
+.fo-topbar-guidance-line {
+  color: var(--muted);
+}
+
+.topbar .actions {
+  display:flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content:flex-end;
+  align-items: flex-start;
+}
+
+.topbar .actions .btn { white-space: nowrap; }
+
+.topbar .left .fo-topbar-action {
+  margin-left: 0;
+  align-self: flex-start;
+  line-height: 1.1;
+  font-size: 12px;
+}
+
+.topbar .left .fo-topbar-action.is-hidden {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.page { display:none; }
+.page.active { display:block; }
+.page[hidden] { display: none !important; }
+
+@media (max-width: 1100px) {
+  .topbar {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar .actions {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .topbar .left .h2 {
+    white-space: normal;
+  }
+}

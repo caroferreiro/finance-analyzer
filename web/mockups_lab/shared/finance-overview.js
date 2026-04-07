@@ -1761,6 +1761,9 @@
 
   async function importMappingsCsvFiles(files) {
     var current = ensureMappingsShape(getCurrentBundle() && getCurrentBundle().mappingsObj);
+    if (!Array.isArray(current.categoryByDetailPrefix)) {
+      current.categoryByDetailPrefix = [];
+    }
     var results = [];
     var module = await getMappingsCsvModule();
 
@@ -1790,7 +1793,33 @@
         results.push(file.name + ": no valid rows, skipped.");
         continue;
       }
-      current[detected.key] = Object.assign({}, current[detected.key] || {}, parsed);
+
+      if (detected.key === "categoryByDetail") {
+        var exactEntries = {};
+        var prefixEntries = [];
+        var existingPrefixKeys = {};
+        current.categoryByDetailPrefix.forEach(function (e) { existingPrefixKeys[e.prefix] = true; });
+
+        Object.keys(parsed).forEach(function (key) {
+          if (key.endsWith("*")) {
+            var prefix = normalizedDetailLookupKey(key.slice(0, -1));
+            if (prefix && !existingPrefixKeys[prefix]) {
+              prefixEntries.push({ prefix: prefix, category: parsed[key] });
+              existingPrefixKeys[prefix] = true;
+            }
+          } else {
+            exactEntries[normalizedDetailLookupKey(key)] = parsed[key];
+          }
+        });
+
+        current.categoryByDetail = Object.assign({}, current.categoryByDetail || {}, exactEntries);
+        current.categoryByDetailPrefix = current.categoryByDetailPrefix.concat(prefixEntries);
+        current.categoryByDetailPrefix.sort(function (a, b) { return b.prefix.length - a.prefix.length; });
+        count = Object.keys(exactEntries).length + prefixEntries.length;
+      } else {
+        current[detected.key] = Object.assign({}, current[detected.key] || {}, parsed);
+      }
+
       results.push(file.name + ": " + toLocale(count, 0, 0) + " " + (MAPPING_KEY_LABELS[detected.key] || detected.key) + " rules.");
     }
 

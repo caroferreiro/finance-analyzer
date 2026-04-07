@@ -206,6 +206,8 @@
     "fo-import-mappings-input",
     "fo-settings-import-mappings-btn",
     "fo-settings-import-mappings-input",
+    "fo-settings-import-mappings-csvs-btn",
+    "fo-settings-import-mappings-csvs-input",
     "fo-download-template-mappings-btn",
     "fo-settings-download-template-mappings-btn",
     "fo-download-mappings-btn",
@@ -1720,6 +1722,89 @@
     return message;
   }
 
+  var CSV_MAPPING_HEADER_MAP = {
+    "rawowner": "ownersByCardOwner",
+    "detail": "categoryByDetail",
+    "card_number": "ownersByCardNumber",
+    "card_owner_label": "ownersByCardOwner",
+  };
+
+  function detectMappingTypeFromHeader(headerLine) {
+    var cleaned = String(headerLine || "").replace(/^\uFEFF/, "").trim().toLowerCase();
+    var sep = cleaned.indexOf(";") !== -1 ? ";" : ",";
+    var firstCol = cleaned.split(sep)[0].trim();
+    if (firstCol === "category") return { key: "categorySegmentByCategory", sep: sep };
+    var mapped = CSV_MAPPING_HEADER_MAP[firstCol];
+    if (mapped) return { key: mapped, sep: sep };
+    return null;
+  }
+
+  function parseCsvGeneric(text, sep) {
+    var result = {};
+    var lines = text.trim().split("\n").filter(function (l) { return l.trim(); });
+    if (lines.length < 2) return result;
+    for (var i = 1; i < lines.length; i++) {
+      var parts = lines[i].split(sep).map(function (s) { return s.trim(); });
+      if (parts.length >= 2 && parts[0]) {
+        result[parts[0]] = parts[1] || "";
+      }
+    }
+    return result;
+  }
+
+  var MAPPING_KEY_LABELS = {
+    ownersByCardOwner: "card-owner",
+    ownersByCardNumber: "card-number",
+    categoryByDetail: "category",
+    categorySegmentByCategory: "category-segment"
+  };
+
+  async function importMappingsCsvFiles(files) {
+    var current = ensureMappingsShape(getCurrentBundle() && getCurrentBundle().mappingsObj);
+    var results = [];
+    var module = await getMappingsCsvModule();
+
+    for (var i = 0; i < files.length; i++) {
+      var file = files[i];
+      var text = await file.text();
+      var lines = text.trim().split("\n");
+      if (lines.length < 1) {
+        results.push(file.name + ": empty file, skipped.");
+        continue;
+      }
+      var detected = detectMappingTypeFromHeader(lines[0]);
+      if (!detected) {
+        results.push(file.name + ": unrecognized header, skipped.");
+        continue;
+      }
+
+      var parsed;
+      if (detected.key === "categorySegmentByCategory" && module && typeof module.parseCategorySegmentsCsv === "function") {
+        parsed = module.parseCategorySegmentsCsv(text);
+      } else {
+        parsed = parseCsvGeneric(text, detected.sep);
+      }
+
+      var count = Object.keys(parsed).length;
+      if (count === 0) {
+        results.push(file.name + ": no valid rows, skipped.");
+        continue;
+      }
+      current[detected.key] = Object.assign({}, current[detected.key] || {}, parsed);
+      results.push(file.name + ": " + toLocale(count, 0, 0) + " " + (MAPPING_KEY_LABELS[detected.key] || detected.key) + " rules.");
+    }
+
+    var computeInfo = await applyMappingsAndMaybeRecompute(current);
+    var message = "Imported mapping CSVs. " + results.join(" ");
+    if (computeInfo.hasCsvFiles) {
+      message += " Recomputed " + toLocale(computeInfo.tableCount, 0, 0) + " table(s).";
+    }
+    if (computeInfo.storageWarning) {
+      message += " Storage warning: " + computeInfo.storageWarning;
+    }
+    return message;
+  }
+
   async function clearMappings() {
     var computeInfo = await applyMappingsAndMaybeRecompute({});
     var message = "Cleared mappings.";
@@ -2042,6 +2127,8 @@
     var importMappingsInput = document.getElementById("fo-import-mappings-input");
     var settingsImportMappingsBtn = document.getElementById("fo-settings-import-mappings-btn");
     var settingsImportMappingsInput = document.getElementById("fo-settings-import-mappings-input");
+    var settingsImportMappingsCsvsBtn = document.getElementById("fo-settings-import-mappings-csvs-btn");
+    var settingsImportMappingsCsvsInput = document.getElementById("fo-settings-import-mappings-csvs-input");
     var downloadTemplateMappingsBtn = document.getElementById("fo-download-template-mappings-btn");
     var settingsDownloadTemplateMappingsBtn = document.getElementById("fo-settings-download-template-mappings-btn");
     var downloadMappingsBtn = document.getElementById("fo-download-mappings-btn");
@@ -2435,6 +2522,45 @@
           return;
         }
         await handleImportMappingsJsonInputFile(file);
+      });
+    }
+
+    if (settingsImportMappingsCsvsBtn && settingsImportMappingsCsvsInput) {
+      settingsImportMappingsCsvsBtn.addEventListener("click", function () {
+        if (lifecycleBusy) {
+          return;
+        }
+        settingsImportMappingsCsvsInput.click();
+      });
+    }
+
+    if (settingsImportMappingsCsvsInput) {
+      settingsImportMappingsCsvsInput.addEventListener("change", async function (event) {
+        var files = event.target && event.target.files ? event.target.files : [];
+        if (event.target) {
+          event.target.value = "";
+        }
+        if (!files.length) {
+          return;
+        }
+        await runLifecycleAction("import-mappings-csvs", async function () {
+          try {
+            if (hasAnyMappings(getCurrentBundle().mappingsObj)) {
+              if (!global.confirm("Merge CSV mappings into current mappings?")) {
+                return;
+              }
+            }
+            setLiveStatus("Importing mapping CSVs...", true);
+            setLifecycleStatus("Importing " + files.length + " CSV file(s)...");
+            var message = await importMappingsCsvFiles(files);
+            setLifecycleStatus(message);
+            setLiveStatus(message, false);
+          } catch (err) {
+            var errorMessage = err && err.message ? err.message : String(err);
+            setLifecycleStatus("Mapping CSV import failed: " + errorMessage);
+            setLiveStatus("Mapping CSV import failed: " + errorMessage, false);
+          }
+        });
       });
     }
 
